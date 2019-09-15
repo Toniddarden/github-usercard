@@ -2,13 +2,6 @@
            (replacing the palceholder with your Github name):
            https://api.github.com/users/<your name>
 */
-// axios.get('https:api.github.com/users/Toniddarden')
-//   .then(function (response) {
-//     console.log(response);
-//   })
-//   .catch(function (error) {
-//     console.log(error);
-//   });
 
 /* Step 2: Inspect and study the data coming back, this is YOUR 
    github info! You will need to understand the structure of this 
@@ -69,29 +62,19 @@
   luishrd
   bigknell
 */
-axios
-  .get("https:api.github.com/users/Toniddarden")
-  .then(function(response) {
-    // handle success
-    console.log(response);
-  })
-  .catch(function(error) {
-    // handle error
-    console.log(error);
-  })
-  .finally(function() {
-    // always executed
-  });
-
-const entryCard = document.querySelector(".cards");
-
-const followersArray = [
-  "bvneilson",
-  "Toniddarden",
-  "Ksaboor",
-  "luishrd",
-  "bigknell"
-];
+// axios
+//   .get("https:api.github.com/users/Toniddarden")
+//   .then(function(response) {
+//     // handle success
+//     console.log(response);
+//   })
+//   .catch(function(error) {
+//     // handle error
+//     console.log(error);
+//   })
+//   .finally(function() {
+//     // always executed
+//   });
 
 // followersArray.forEach(follower =>
 //   axios
@@ -105,72 +88,87 @@ const followersArray = [
 //     })
 // );
 
-followersArray.forEach(user => {
-  axios.get(`https://api.github.com/users/${user}`)
-    .then (data => {
-      const card = userCards(data.data)
-      const cards = document.querySelector('.cards')
-      cards.appendChild(card)
-     
-    }) 
-    
-})
+// followersArray.forEach(user => {
+//   axios.get(`https://api.github.com/users/${user}`)
+//     .then (data => {
+//       const card = userCards(data.data)
+//       const cards = document.querySelector('.cards')
+//       cards.appendChild(card)
+
+//     })
+
+// })\\\
+
+
+// grabbing just toniddarden api request , not needed because she(me) is in the array 
+// axios.get("https://api.github.com/users/toniddarden").then(response => {
+//   console.log(response.data);
+//   cardPlacement.appendChild(userCards(response.data));
+// });
 
 
 
+//html placement
+const cardPlacement = document.querySelector(".cards");
+
+//card array
+const followersArray = [
+  "bvneilson",
+  "Toniddarden",
+  "Ksaboor",
+  "luishrd",
+  "bigknell"
+];
 
 
+// grabbing card info from array
 
-function userCards(githubFollowers) {
-  const card = document.createElement("div");
-  card.classList.add("card");
+followersArray.forEach(follower => {
+  axios.get(`https://api.github.com/users/${follower}`).then(response => {
+    console.log(response.data);
+    cardPlacement.appendChild(userCards(response.data));
+  });
+});
 
-  const cardImage = document.createElement("img");
-  Image.src = githubFollowers.avatar_url;
-  card.appendChild(cardImage);
-
+function userCards(data) {
+  const newCard = document.createElement("div");
+  const cardImg = document.createElement("img");
   const cardInfo = document.createElement("div");
+  const cardName = document.createElement("h3");
+  const userName = document.createElement("p");
+  const userLocation = document.createElement("p");
+  const profileLink = document.createElement("a");
+  const numberOfFollowers = document.createElement("p");
+  // const numberFollowing = document.createElement("p");
+  const bio = document.createElement("p");
+
+  //set class names
+  newCard.classList.add("card");
   cardInfo.classList.add("card-info");
-  card.appendChild(cardInfo);
+  cardName.classList.add("name");
+  userName.classList.add("username");
 
-  const name = document.createElement("h3");
-  name.classList.add("name");
-  name.textContent = githubFollowers.name;
-  cardInfo.appendChild(name);
+  //Set text content
+  cardImg.src = data.avatar_url;
+  cardName.textContent = data.name;
+  userName.textContent = data.login;
+  userLocation.textContent = `Location: ${data.location}`;
+  profileLink.textContent = `${data.html_url}`;
+  profileLink.href = `${data.html_url}`;
+  numberOfFollowers.textContent = `Folowers: ${data.followers}`;
+  bio.textContent = `Bio: ${data.bio}`;
 
-  const anchor = document.createElement("a");
-  anchor.textContent = githubFollowers.following_url;
+  //format of elements
+  newCard.appendChild(cardImg);
+  newCard.appendChild(cardInfo);
+  cardInfo.appendChild(cardName);
+  cardInfo.appendChild(userName);
+  cardInfo.appendChild(userLocation);
+  cardInfo.appendChild(profileLink);
+  cardInfo.appendChild(numberOfFollowers);
+  cardInfo.appendChild(bio);
 
-  let firstParagraph = document.createElement("p");
-  firstParagraph.classList.add("username");
-  firstParagraph.textContent = githubFollowers.login;
-  cardInfo.appendChild(firstParagraph);
-
-  let secondParagraph = document.createElement("p");
-  secondParagraph.textContent = `Location: ${githubFollowers.location}`;
-  cardInfo.appendChild(secondParagraph);
-
-  let thirdParagraph = document.createElement("p");
-  thirdParagraph.textContent = `Profile:  ${anchor}`;
-  cardInfo.appendChild(thirdParagraph);
-
-  let fourthParagraph = document.createElement("p");
-  fourthParagraph.textContent = `Followers: ${githubFollowers.followers}`;
-  cardInfo.appendChild(fourthParagraph);
-
-  let fifthParagraph = document.createElement("p");
-  fifthParagraph.textContent = `Following: ${githubFollowers.following}`;
-  cardInfo.appendChild(fifthParagraph);
-
-  let sixthParagraph = document.createElement("p");
-  sixthParagraph.textContent = `Bio: ${githubFollowers.bio}`;
-  cardInfo.appendChild(sixthParagraph);
-
-  console.log(card);
-  return card;
+  return newCard;
 }
 
-const githubFollowers = followersArray.map(data => {
-  let cards = document.querySelector(".cards");
-  cards.appendChild(userCards(data));
-});
+
