@@ -14,6 +14,14 @@
            create a new component and add it to the DOM as a child of .cards
 */
 
+// axios.get('https:api.github.com/users')
+// .then(function (response) {
+//   console.log(response);
+// })
+// .catch(function (error) {
+//   console.log(error);
+// });
+
 /* Step 5: Now that you have your own card getting added to the DOM, either 
           follow this link in your browser https://api.github.com/users/<Your github name>/followers 
           , manually find some other users' github handles, or use the list found 
@@ -24,7 +32,8 @@
           user, and adding that card to the DOM.
 */
 
-const followersArray = [];
+//Using that array, iterate over it, requesting data for each user, creating a new card for each
+//user, and adding that card to the DOM.
 
 /* Step 3: Create a function that accepts a single object as its only argument,
           Using DOM methods and properties, create a component that will return the following DOM element:
@@ -53,3 +62,113 @@ const followersArray = [];
   luishrd
   bigknell
 */
+// axios
+//   .get("https:api.github.com/users/Toniddarden")
+//   .then(function(response) {
+//     // handle success
+//     console.log(response);
+//   })
+//   .catch(function(error) {
+//     // handle error
+//     console.log(error);
+//   })
+//   .finally(function() {
+//     // always executed
+//   });
+
+// followersArray.forEach(follower =>
+//   axios
+//     .get(`https://api.github.com/users/${follower}`)
+//     .then(function(response) {
+//       console.log(response);
+//       userCards(response.data);
+//     })
+//     .catch(function(error) {
+//       console.log(error);
+//     })
+// );
+
+// followersArray.forEach(user => {
+//   axios.get(`https://api.github.com/users/${user}`)
+//     .then (data => {
+//       const card = userCards(data.data)
+//       const cards = document.querySelector('.cards')
+//       cards.appendChild(card)
+
+//     })
+
+// })\\\
+
+
+// grabbing just toniddarden api request , not needed because she(me) is in the array 
+// axios.get("https://api.github.com/users/toniddarden").then(response => {
+//   console.log(response.data);
+//   cardPlacement.appendChild(userCards(response.data));
+// });
+
+
+
+//html placement
+const cardPlacement = document.querySelector(".cards");
+
+//card array
+const followersArray = [
+  "bvneilson",
+  "Toniddarden",
+  "Ksaboor",
+  "luishrd",
+  "bigknell"
+];
+
+
+// grabbing card info from array
+
+followersArray.forEach(follower => {
+  axios.get(`https://api.github.com/users/${follower}`).then(response => {
+    console.log(response.data);
+    cardPlacement.appendChild(userCards(response.data));
+  });
+});
+
+function userCards(data) {
+  const newCard = document.createElement("div");
+  const cardImg = document.createElement("img");
+  const cardInfo = document.createElement("div");
+  const cardName = document.createElement("h3");
+  const userName = document.createElement("p");
+  const userLocation = document.createElement("p");
+  const profileLink = document.createElement("a");
+  const numberOfFollowers = document.createElement("p");
+  // const numberFollowing = document.createElement("p");
+  const bio = document.createElement("p");
+
+  //set class names
+  newCard.classList.add("card");
+  cardInfo.classList.add("card-info");
+  cardName.classList.add("name");
+  userName.classList.add("username");
+
+  //Set text content
+  cardImg.src = data.avatar_url;
+  cardName.textContent = data.name;
+  userName.textContent = data.login;
+  userLocation.textContent = `Location: ${data.location}`;
+  profileLink.textContent = `${data.html_url}`;
+  profileLink.href = `${data.html_url}`;
+  numberOfFollowers.textContent = `Folowers: ${data.followers}`;
+  bio.textContent = `Bio: ${data.bio}`;
+
+  //format of elements
+  newCard.appendChild(cardImg);
+  newCard.appendChild(cardInfo);
+  cardInfo.appendChild(cardName);
+  cardInfo.appendChild(userName);
+  cardInfo.appendChild(userLocation);
+  cardInfo.appendChild(profileLink);
+  cardInfo.appendChild(numberOfFollowers);
+  cardInfo.appendChild(bio);
+
+  return newCard;
+}
+
+
